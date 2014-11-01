@@ -1,6 +1,6 @@
-package info.fluxprojects.kaggle.digitrecognozer;
+package info.fluxprojects.kaggle.digitrecognizer;
 
-import info.fluxprojects.kaggle.digitrecognozer.files.TrainingDataEntry;
+import info.fluxprojects.kaggle.digitrecognizer.files.TrainingDataEntry;
 
 import java.util.IntSummaryStatistics;
 import java.util.List;

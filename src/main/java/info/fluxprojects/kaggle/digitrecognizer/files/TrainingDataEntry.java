@@ -1,4 +1,4 @@
-package info.fluxprojects.kaggle.digitrecognozer.files;
+package info.fluxprojects.kaggle.digitrecognizer.files;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

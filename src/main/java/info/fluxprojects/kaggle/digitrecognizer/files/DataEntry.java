@@ -1,4 +1,4 @@
-package info.fluxprojects.kaggle.digitrecognozer.files;
+package info.fluxprojects.kaggle.digitrecognizer.files;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
