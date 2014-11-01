@@ -18,7 +18,7 @@ public class DataRecognizer {
 	public static final String TRAINING_DATA_FILE_NAME = DataRecognizer.class.getResource("/train.csv").getFile();
 
 	public static void main(String[] args) throws Exception {
-		final List<TrainingDataEntry> entries = TrainingDataEntry.fromFile(TRAINING_DATA_FILE_NAME);
+		final List<TrainingDataEntry> entries = TrainingDataEntry.fromTrainingCSV(TRAINING_DATA_FILE_NAME);
 		final IntSummaryStatistics[] statistics = new IntSummaryStatistics[10];
 		for (int i = 0; i < statistics.length; i++) {
 			final int index = i;

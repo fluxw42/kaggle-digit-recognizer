@@ -48,7 +48,7 @@ public class TrainingDataEntry extends DataEntry {
 	 * @return The new entry, with the correct data from the CSV line
 	 * @throws IllegalArgumentException When the given CSV entry could not be parsed
 	 */
-	public static final TrainingDataEntry fromCSVLine(final int id, final String csvLine) throws IllegalArgumentException {
+	public static final TrainingDataEntry fromTrainingCSVLine(final int id, final String csvLine) throws IllegalArgumentException {
 		if (csvLine == null || csvLine.isEmpty()) {
 			throw new IllegalArgumentException("Unable to parse CSV line [" + csvLine + "] as training data entry.");
 		}
@@ -78,14 +78,14 @@ public class TrainingDataEntry extends DataEntry {
 	 * @return The list of training data
 	 * @throws IOException When the file could not be read
 	 */
-	public static final List<TrainingDataEntry> fromFile(final String fileName) throws IOException {
+	public static final List<TrainingDataEntry> fromTrainingCSV(final String fileName) throws IOException {
 		final List<TrainingDataEntry> entries = new ArrayList<>();
 		try (final BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
 			int id = 0;
 
 			// Skip the header
 			for (String line = reader.readLine(); (line = reader.readLine()) != null; id++) {
-				final TrainingDataEntry entry = TrainingDataEntry.fromCSVLine(id, line);
+				final TrainingDataEntry entry = TrainingDataEntry.fromTrainingCSVLine(id, line);
 				if (entry != null) {
 					entries.add(entry);
 				} else {

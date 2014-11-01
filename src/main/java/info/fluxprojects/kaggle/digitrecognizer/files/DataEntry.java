@@ -2,6 +2,11 @@ package info.fluxprojects.kaggle.digitrecognizer.files;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -96,6 +101,62 @@ public class DataEntry {
 			}
 		}
 		return bufferedImage;
+	}
+
+	/**
+	 * Extract a list of data entries from the given CSV file
+	 *
+	 * @param fileName The name of the file containing the data (with header)
+	 * @return The list of data entries
+	 * @throws IOException When the file could not be read
+	 */
+	public static final List<DataEntry> fromCSV(final String fileName) throws IOException {
+		final List<DataEntry> entries = new ArrayList<>();
+		try (final BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+			int id = 0;
+
+			// Skip the header
+			for (String line = reader.readLine(); (line = reader.readLine()) != null; id++) {
+				final DataEntry entry = DataEntry.fromDataCSVLine(id, line);
+				if (entry != null) {
+					entries.add(entry);
+				} else {
+					throw new IllegalStateException("");
+				}
+			}
+
+		}
+		return entries;
+	}
+
+	/**
+	 * Create a new {@link DataEntry} from the given CSV line
+	 *
+	 * @param id      The optional id used for the new entry
+	 * @param csvLine The CSV line to parse as a new {@link DataEntry}
+	 * @return The new entry, with the correct data from the CSV line
+	 * @throws IllegalArgumentException When the given CSV entry could not be parsed
+	 */
+	public static final DataEntry fromDataCSVLine(final int id, final String csvLine) throws IllegalArgumentException {
+		if (csvLine == null || csvLine.isEmpty()) {
+			throw new IllegalArgumentException("Unable to parse CSV line [" + csvLine + "] as data entry.");
+		}
+
+		final String[] parts = csvLine.split(",");
+		if (parts.length != (IMAGE_SIZE * IMAGE_SIZE)) {
+			throw new IllegalArgumentException("Unable to parse CSV line [" + csvLine + "] as data entry.");
+		}
+
+		final short[][] image = new short[IMAGE_SIZE][IMAGE_SIZE];
+		for (int y = 0; y < image.length; y++) {
+			for (int x = 0; x < image[y].length; x++) {
+				final int index = x + (y * IMAGE_SIZE);
+				final String rawValue = parts[index];
+				image[x][y] = Short.valueOf(rawValue);
+			}
+		}
+
+		return new DataEntry(id, image);
 	}
 
 	@Override
