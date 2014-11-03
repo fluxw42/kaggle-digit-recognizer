@@ -180,7 +180,11 @@ public class DataEntry {
 		for (int y = 0; y < image.length; y++) {
 			for (int x = 0; x < image[y].length; x++) {
 				final int pixel = image[x][y];
-				sb.append(String.format("%02X", pixel));
+				if (pixel > 0) {
+					sb.append(String.format("%02X", pixel));
+				} else {
+					sb.append("  ");
+				}
 			}
 			sb.append('\n');
 		}
