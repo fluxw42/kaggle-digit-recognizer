@@ -1,6 +1,8 @@
 package info.fluxprojects.kaggle.digitrecognizer;
 
+import info.fluxprojects.kaggle.digitrecognizer.files.DataEntry;
 import info.fluxprojects.kaggle.digitrecognizer.files.TrainingDataEntry;
+import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.util.TransferFunctionType;
@@ -27,7 +29,8 @@ public class NeuralNetworkSolution {
 	public static final String TEST_DATA_FILE_NAME = DataRecognizer.class.getResource("/test.csv").getFile();
 
 	public static void main(String[] args) throws Exception {
-		learn("network.nnet");
+		//learn("network.nnet");
+		resolve("network.nnet", false);
 	}
 
 	/**
@@ -64,6 +67,54 @@ public class NeuralNetworkSolution {
 
 		System.out.println("Saving neural network to [" + neuralNetFile + "]");
 		network.save(neuralNetFile);
+
+	}
+
+	/**
+	 * @param neuralNetFile The file name used to load the neural network from
+	 * @throws IOException When the test data or the neural network could not be loaded
+	 */
+	private static void resolve(final String neuralNetFile, final boolean manual) throws IOException {
+		System.out.println("Reading test data from [" + TEST_DATA_FILE_NAME + "]");
+		final List<DataEntry> dataEntries = DataEntry.fromCSV(TEST_DATA_FILE_NAME);
+
+		System.out.println("Loading neural network from [" + neuralNetFile + "]");
+		final NeuralNetwork nn = NeuralNetwork.createFromFile(neuralNetFile);
+
+		final StringBuilder sb = new StringBuilder("ImageId,Solution\n");
+		for (int i = 0; i < dataEntries.size(); i++) {
+			final DataEntry dataEntry = dataEntries.get(i);
+			final double[] input = Arrays.stream(dataEntry.getPlainImage())
+					.mapToDouble(pixel -> pixel == 0 ? 0 : 1)
+					.toArray();
+
+			nn.setInput(input);
+			nn.calculate();
+
+			final double[] output = nn.getOutput();
+			final double max = Arrays.stream(output).max().getAsDouble();
+			int solution = -1;
+			for (int index = 0; index < output.length; index++) {
+				if (output[index] == max) {
+					solution = index;
+					break;
+				}
+			}
+
+			if (solution == -1) {
+				throw new IllegalStateException();
+			}
+
+			sb.append(dataEntry.getId() + 1).append(',').append(solution).append('\n');
+
+			if (manual) {
+				System.out.println(dataEntry);
+				System.out.println("Solution = " + solution);
+				System.in.read();
+			}
+		}
+
+		System.out.println(sb.toString());
 
 	}
 
