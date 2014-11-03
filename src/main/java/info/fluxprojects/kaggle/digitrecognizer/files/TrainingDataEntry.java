@@ -22,10 +22,10 @@ public class TrainingDataEntry extends DataEntry {
 	 * Create a new training data entry with the given values
 	 *
 	 * @param id       The optional id used for the new entry
-	 * @param image    The image encoded as 28x28 shorts with each pixel value between 0 and 255
+	 * @param image    The image encoded as 28x28 ints with each pixel value between 0 and 255
 	 * @param solution The solution of this data
 	 */
-	private TrainingDataEntry(final int id, final short[][] image, final int solution) {
+	private TrainingDataEntry(final int id, final int[][] image, final int solution) {
 		super(id, image);
 		this.solution = solution;
 	}
@@ -59,7 +59,7 @@ public class TrainingDataEntry extends DataEntry {
 		}
 
 		final int solution = Integer.valueOf(parts[0]);
-		final short[][] image = new short[IMAGE_SIZE][IMAGE_SIZE];
+		final int[][] image = new int[IMAGE_SIZE][IMAGE_SIZE];
 		for (int y = 0; y < image.length; y++) {
 			for (int x = 0; x < image[y].length; x++) {
 				final int index = 1 + x + (y * IMAGE_SIZE);

@@ -29,7 +29,7 @@ public class DataEntry {
 	/**
 	 * The image representing this entry
 	 */
-	private final short[][] image = new short[IMAGE_SIZE][IMAGE_SIZE];
+	private final int[][] image = new int[IMAGE_SIZE][IMAGE_SIZE];
 
 	/**
 	 * Create a new data entry with the following parameters
@@ -37,7 +37,7 @@ public class DataEntry {
 	 * @param id    The optional id used for the new entry
 	 * @param image The image encoded as 28x28 shorts with each pixel value between 0 and 255
 	 */
-	public DataEntry(final int id, final short[][] image) {
+	public DataEntry(final int id, final int[][] image) {
 		this.id = id;
 		for (int i = 0; i < image.length; i++) {
 			System.arraycopy(image[i], 0, this.image[i], 0, IMAGE_SIZE);
@@ -54,12 +54,26 @@ public class DataEntry {
 	}
 
 	/**
-	 * Get the image encoded as 28x28 shorts with each pixel value between 0 and 255
+	 * Get the image encoded as 28x28 ints with each pixel value between 0 and 255
 	 *
-	 * @return The image encoded as a 28x28 array of shorts
+	 * @return The image encoded as a 28x28 array of ints
 	 */
-	public final short[][] getImage() {
+	public final int[][] getImage() {
 		return image;
+	}
+
+	/**
+	 * Get the image encoded as 784 ints with each pixel value between 0 and 255
+	 *
+	 * @return The image encoded as an array of 784 ints
+	 */
+	public final int[] getPlainImage() {
+		final int[] plainImage = new int[IMAGE_SIZE * IMAGE_SIZE];
+		for (int i = 0; i < image.length; i++) {
+			final int[] ints = image[i];
+			System.arraycopy(ints, 0, plainImage, i * IMAGE_SIZE, ints.length);
+		}
+		return plainImage;
 	}
 
 	/**
@@ -69,11 +83,11 @@ public class DataEntry {
 	 *                  When the predicate is 'null' none of the pixels is matched
 	 * @return The number of pixels matching the predicate
 	 */
-	public final int countPixels(final Predicate<Short> predicate) {
+	public final int countPixels(final Predicate<Integer> predicate) {
 		int count = 0;
 		if (predicate != null) {
-			for (final short[] line : image) {
-				for (final short pixel : line) {
+			for (final int[] line : image) {
+				for (final int pixel : line) {
 					if (predicate.test(pixel)) {
 						count++;
 					}
@@ -94,7 +108,7 @@ public class DataEntry {
 		final Graphics graphics = bufferedImage.getGraphics();
 		for (int y = 0; y < image.length; y++) {
 			for (int x = 0; x < image[y].length; x++) {
-				final short pixel = image[x][y];
+				final int pixel = image[x][y];
 				graphics.setColor(pixel > 128 ? Color.BLACK : Color.WHITE);
 				graphics.setPaintMode();
 				graphics.fillRect(x * imageSize, y * imageSize, imageSize, imageSize);
@@ -147,7 +161,7 @@ public class DataEntry {
 			throw new IllegalArgumentException("Unable to parse CSV line [" + csvLine + "] as data entry.");
 		}
 
-		final short[][] image = new short[IMAGE_SIZE][IMAGE_SIZE];
+		final int[][] image = new int[IMAGE_SIZE][IMAGE_SIZE];
 		for (int y = 0; y < image.length; y++) {
 			for (int x = 0; x < image[y].length; x++) {
 				final int index = x + (y * IMAGE_SIZE);
@@ -165,7 +179,7 @@ public class DataEntry {
 		sb.append("id = ").append(id).append("\n");
 		for (int y = 0; y < image.length; y++) {
 			for (int x = 0; x < image[y].length; x++) {
-				final short pixel = image[x][y];
+				final int pixel = image[x][y];
 				sb.append(String.format("%02X", pixel));
 			}
 			sb.append('\n');
