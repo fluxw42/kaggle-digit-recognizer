@@ -81,7 +81,7 @@ public class NeuralNetworkSolution {
 		System.out.println("Loading neural network from [" + neuralNetFile + "]");
 		final NeuralNetwork nn = NeuralNetwork.createFromFile(neuralNetFile);
 
-		final StringBuilder sb = new StringBuilder("ImageId,Solution\n");
+		final StringBuilder sb = new StringBuilder("ImageId,Label\n");
 		for (int i = 0; i < dataEntries.size(); i++) {
 			final DataEntry dataEntry = dataEntries.get(i);
 			final double[] input = Arrays.stream(dataEntry.getPlainImage())
